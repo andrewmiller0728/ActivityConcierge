@@ -1,0 +1,5 @@
+__pycache__
+backups/*.dat
+activityconcierge_test.py
+activities.log
+
