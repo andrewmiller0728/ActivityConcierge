@@ -90,7 +90,7 @@ class Tag:
 #         - reward score (must be an integer between 0 and 10, inclusive)
 class Activity:
 
-    def __init__(self, name: str, description: str, tags: list, ease: int, reward: int) -> None:
+    def __init__(self, name:str, description:str, tags:list, ease:int, reward:int) -> None:
         if ease not in range(0, 11):
             raise ValueError("Ease score must be an integer between 0 and 10, inclusive.")
         if reward not in range(0, 11):
@@ -102,7 +102,7 @@ class Activity:
         self.reward = reward
         pass
 
-    def __eq__(self, o: object) -> bool:
+    def __eq__(self, o:object) -> bool:
         if isinstance(o, Activity):
             return self.name == o.name
         else:
@@ -118,7 +118,7 @@ class Activity:
             tags_str = self.get_tags_str()
             return f"{self.name}:{self.description}:[{tags_str}]:({self.ease}:{self.reward})"
     
-    def attach_tag(self, tag: Tag) -> bool:
+    def attach_tag(self, tag:Tag) -> bool:
         if tag not in self.tags:
             self.tags.append(tag)
             tag.activities.append(self)
@@ -134,6 +134,31 @@ class Activity:
         return tags_str
 
 # end Activity class
+
+# TODO: Command Class
+''' Command                                                                                                          '''
+#       This class implements the Command design pattern.
+#       The Command class is an abstract class that represents a command the program can execute.
+#         - member variables:
+#           - name: the name of the command
+#           - datetime: the date and time the command was executed
+#           - args: a list of arguments for the command
+#         - abstract method, execute(), which is implemented by subclasses.
+#         - abstract method, log(), which logs the command to the log file.
+class Command:
+
+    def __init__(self, name:str, args:list) -> None:
+        self.name = name
+        self.datetime = datetime.datetime.now()
+        self.args = args
+        pass
+
+    def execute(self) -> None:
+        pass
+
+    def log(self) -> None:
+        pass
+# end Command class
 
 
 ''' FUNCTIONS                                                                                                        '''
@@ -186,7 +211,7 @@ def __get_help_menu__() -> str:
 #       This function formats a message for logging and appends it to the log file.
 #       Log messages begin with a timestamp and end with a newline.
 #       It returns the formatted log message.
-def __log_msg__(message: str, console_print:bool=False) -> str:
+def __log_msg__(message:str, console_print:bool=False) -> str:
     timestamp = datetime.datetime.now().strftime(ACTC_LOG_FORMAT)
     log_entry = f"[{timestamp}] \t{message}\n"
     if console_print:
@@ -203,7 +228,7 @@ def __log_msg__(message: str, console_print:bool=False) -> str:
 ''' __get_activity__                                                                                                 '''
 #       This function returns an activity object from the database given the activity name.
 #       If the activity is not found, it raises an exception.
-def get_activity(activities:list, activity_name: str) -> Activity:
+def get_activity(activities:list, activity_name:str) -> Activity:
     for activity in activities:
         if activity.name == activity_name.upper():
             return activity
@@ -250,7 +275,6 @@ def load_activities(activity_data:str) -> list:
     except FileNotFoundError:
         __log_msg__(f"Could not find Activities data file \'{activity_data}\'", True)
         __log_msg__(f"Creating new Activities data file \'{activity_data}\'...")
-        # create new data file using ACTC_DATA for name, no header
         with open(activity_data, "w") as dfile:
             pass
         __log_msg__(f"Created new Activities data file \'{activity_data}\'.", True)
@@ -295,7 +319,7 @@ def save_activities(activities:list, activity_data:str) -> bool:
 #       This function adds an activity to a list of activities if the activity is not already present.
 #       The user can optionally specify description, tags, ease, and reward. If unspecified, default values are used.
 #       It returns True if the activity was added, False otherwise.
-def add_activity(activities:list, name: str, description: str = "", tags: list = [], ease: int = 0, reward: int = 0) -> bool:
+def add_activity(activities:list, name:str, description:str="", tags:list=[], ease:int=0, reward:int=0) -> bool:
     __log_msg__(f"Adding activity \'{name}\'...")
     if get_activity(activities, name):
         __log_msg__(f"\tActivity \'{name}\' already exists.", True)
@@ -308,7 +332,7 @@ def add_activity(activities:list, name: str, description: str = "", tags: list =
 ''' remove_activity                                                                                                  '''
 #       This function removes an activity from the list of activities if it is present.
 #       It returns True if the activity was removed, False otherwise.
-def remove_activity(activities:list, name: str) -> bool:
+def remove_activity(activities:list, name:str) -> bool:
     __log_msg__(f"Removing activity \'{name}\'...")
     activity = get_activity(activities, name)
     if activity is not None:
@@ -323,7 +347,7 @@ def remove_activity(activities:list, name: str) -> bool:
 #       This function edits an activity in the list of activities if it is present.
 #       It prompts the user for the new values of the activity's attributes one at a time.
 #       It returns True if the activity was present & edited, False otherwise.
-def edit_activity_input(activities:list, name: str) -> bool:
+def edit_activity_input(activities:list, name:str) -> bool:
     activity = get_activity(activities, name)
     if activity is not None:
         __log_msg__(f"User editing activity \'{activity.name}\'...")
@@ -340,7 +364,7 @@ def edit_activity_input(activities:list, name: str) -> bool:
 ''' edit_activity                                                                                                    '''
 #       This function edits an activity in the list of activities if it is present.
 #       It returns True if the activity was present & edited, False otherwise.
-def edit_activity(activities:list, name: str, description: str = "", tags: list = [], ease: int = 0, reward: int = 0) -> bool:
+def edit_activity(activities:list, name:str, description:str="", tags:list=[], ease:int=0, reward:int=0) -> bool:
     activity = get_activity(activities, name)
     if activity is not None:
         __log_msg__(f"Editing activity \'{activity.name}\'...")
