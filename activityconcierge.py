@@ -1,6 +1,7 @@
 # activityconcierge.py
 
 
+''' ################################################################################################################ '''
 ''' ACTIVITY CONCIERGE
         This is the main module for the Activity Concierge application.
         The Activity Concierge is a tool that helps users manage their activities.
@@ -25,6 +26,7 @@
 #   - restore function
 
 
+''' ################################################################################################################ '''
 ''' IMPORTS                                                                                                          '''
 
 import os
@@ -33,6 +35,7 @@ import sys
 from prettytable import PrettyTable
 
 
+''' ################################################################################################################ '''
 ''' CONSTANTS                                                                                                        '''
 
 DATA_FILE = "./activities.dat"
@@ -43,6 +46,7 @@ BACKUP_DIR = "./backups"
 BACKUP_TIMESTAMP_FORMAT = '%Y_%m_%d-%H_%M_%S'
 
 
+''' ################################################################################################################ '''
 ''' CLASSES                                                                                                          '''
 
 ''' Tag                                                                                                              '''
@@ -202,6 +206,8 @@ class ActivityGPT:
 
 # end ActivityGPT class
 
+
+''' ################################################################################################################ '''
 ''' FUNCTIONS                                                                                                        '''
 
 ''' __get_help_menu__                                                                                                '''
@@ -430,6 +436,7 @@ def score_activity(activity: Activity) -> float:
     return score
 
 
+''' ################################################################################################################ '''
 ''' MAIN                                                                                                             '''
 #       This function runs activty commands based on command line arguments and saves before exiting.
 #       If no args are provided, it prints a help message.
@@ -508,3 +515,8 @@ def main() -> None:
 #       If this module is run directly as a script, run the main function.
 if __name__ == '__main__':
     main()
+
+''' ################################################################################################################ '''
+
+
+# EOF
