@@ -35,13 +35,12 @@ from prettytable import PrettyTable
 
 ''' CONSTANTS                                                                                                        '''
 
-ACTC_DATA = "./activities.dat"
-ACTC_LOG = "./activities.log"
-ACTC_BACKUP_DIR = "./backups"
-
-ACTC_LOG_FORMAT = "%Y-%m-%d %H:%M:%S"
-ACTC_LOG_HEADER = "[[[ ACTIVITY CONCIERGE LOG ]]]\n\n"
-ACTC_BACKUP_FORMAT = "%Y-%m-%d_%H-%M-%S"
+DATA_FILE = "./activities.dat"
+LOG_FILE = "./activities.log"
+LOG_FORMAT = '%Y_%m_%d-%H_%M_%S'
+LOG_HEADER = "[[[ ACTIVITY CONCIERGE LOG ]]]\n\n"
+BACKUP_DIR = "./backups"
+BACKUP_TIMESTAMP_FORMAT = '%Y_%m_%d-%H_%M_%S'
 
 
 ''' CLASSES                                                                                                          '''
@@ -143,6 +142,8 @@ class Activity:
 #           - name: the name of the command
 #           - datetime: the date and time the command was executed
 #           - args: a list of arguments for the command
+#           - prev: a reference to the previous command, if any (for undo/redo functionality)
+#           - next: a reference to the next command, if any (for undo/redo functionality)
 #         - abstract method, execute(), which is implemented by subclasses.
 #         - abstract method, log(), which logs the command to the log file.
 class Command:
@@ -158,8 +159,48 @@ class Command:
 
     def log(self) -> None:
         pass
+
 # end Command class
 
+# TODO: ActivityGPT Class
+''' ActivityGPT                                                                                                      '''
+#       This class is a singleton class which provides an interface to the GPT-3 API.
+#       Functions include:
+#         - generate activity description
+#         - generate activity tags
+#         - generate new activity
+class ActivityGPT:
+
+    TIMESTAMP_FORMAT = '%Y_%m_%d-%H_%M_%S'
+    __instance__ = None
+
+    @staticmethod
+    def get_instance() -> object:
+        if ActivityGPT.__instance__ is None:
+            ActivityGPT()
+        return ActivityGPT.__instance__
+
+    def __init__(self) -> None:
+        if ActivityGPT.__instance__ is not None:
+            raise Exception("An instance of ActivityGPT already exists, cannot initialize a new instance.")
+        else:
+            ActivityGPT.__instance__ = self
+            ActivityGPT.init_timestamp = datetime.datetime.now().strftime(ActivityGPT.TIMESTAMP_FORMAT)
+        pass
+    
+    def generate_description(self, activity:Activity) -> str:
+        # TODO: implement
+        pass
+
+    def generate_tags(self, activity:Activity) -> list:
+        # TODO: implement
+        pass
+
+    def generate_activity(self) -> Activity:
+        # TODO: implement
+        pass
+
+# end ActivityGPT class
 
 ''' FUNCTIONS                                                                                                        '''
 
@@ -212,16 +253,16 @@ def __get_help_menu__() -> str:
 #       Log messages begin with a timestamp and end with a newline.
 #       It returns the formatted log message.
 def __log_msg__(message:str, console_print:bool=False) -> str:
-    timestamp = datetime.datetime.now().strftime(ACTC_LOG_FORMAT)
+    timestamp = datetime.datetime.now().strftime(LOG_FORMAT)
     log_entry = f"[{timestamp}] \t{message}\n"
     if console_print:
         print(log_entry, end="")
-    if not os.path.exists(ACTC_LOG):            # if log file does not exist, create it
-        with open(ACTC_LOG, "w") as log_file:
-            log_file.write(ACTC_LOG_HEADER)
+    if not os.path.exists(LOG_FILE):            # if log file does not exist, create it
+        with open(LOG_FILE, "w") as log_file:
+            log_file.write(LOG_HEADER)
             log_file.write(log_entry)
     else:                                       # otherwise, append to it
-        with open(ACTC_LOG, "a") as log_file:
+        with open(LOG_FILE, "a") as log_file:
             log_file.write(log_entry)
     return log_entry
 
@@ -239,17 +280,17 @@ def get_activity(activities:list, activity_name:str) -> Activity:
 #       The backup file is saved as <activities_yyyy-mm-dd_hh-mm-ss.dat>.
 #       It returns the path of the backup file.
 def backup_data() -> str:
-    bfile_name = f"activities_{datetime.datetime.now().strftime(ACTC_BACKUP_FORMAT)}.dat"
-    bfile_path = os.path.join(ACTC_BACKUP_DIR, bfile_name)
+    bfile_name = f"activities_{datetime.datetime.now().strftime(BACKUP_TIMESTAMP_FORMAT)}.dat"
+    bfile_path = os.path.join(BACKUP_DIR, bfile_name)
     try:
-        with open(ACTC_DATA, "r") as data_file:
+        with open(DATA_FILE, "r") as data_file:
             with open(bfile_path, "w") as backup_file:
                 for line in data_file:
                     backup_file.write(line)
     except FileNotFoundError:
-        __log_msg__(f"Could not find Activities data file \'{ACTC_DATA}\'")
+        __log_msg__(f"Could not find Activities data file \'{DATA_FILE}\'")
     except Exception as e:
-        __log_msg__(f"Error backing up Activities data file \'{ACTC_DATA}\': {e}")
+        __log_msg__(f"Error backing up Activities data file \'{DATA_FILE}\': {e}")
     finally:
         return bfile_path
 
@@ -398,7 +439,7 @@ def score_activity(activity: Activity) -> float:
 def main() -> None:
     __log_msg__('[[[BEGIN PROGRAM]]]')
     __log_msg__('Initializing program...', True)
-    activities = load_activities(ACTC_DATA)
+    activities = load_activities(DATA_FILE)
     if len(sys.argv) == 1:
         __log_msg__(f"No args provided. Printing help menu...")
         print(f"Usage: {sys.argv[0]} [help | list | add | remove | edit | score | backup]")
@@ -457,7 +498,7 @@ def main() -> None:
         backup_data()
     else:
         print(f"Usage: {sys.argv[0]} [help | list | add | remove | edit | score | backup]")
-    save_activities(activities, ACTC_DATA)
+    save_activities(activities, DATA_FILE)
     __log_msg__('Exiting program...', True)
     __log_msg__('[[[END PROGRAM]]]')
     return None
