@@ -234,6 +234,7 @@ def backup_data() -> str:
 #       The activity data file is formatted as follows:
 #           <name>:<description>:[<tags>]:(<ease>:<reward>)
 #       It returns a list of Activity objects.
+#       If the data file is not found, it creates a new one.
 def load_activities(activity_data:str) -> list:
     __log_msg__(f"Loading activities from \'{activity_data}\'...")
     activities = []
@@ -248,6 +249,11 @@ def load_activities(activity_data:str) -> list:
                 __log_msg__(f"\tLoaded activity \'{name}\'.")
     except FileNotFoundError:
         __log_msg__(f"Could not find Activities data file \'{activity_data}\'", True)
+        __log_msg__(f"Creating new Activities data file \'{activity_data}\'...")
+        # create new data file using ACTC_DATA for name, no header
+        with open(activity_data, "w") as dfile:
+            pass
+        __log_msg__(f"Created new Activities data file \'{activity_data}\'.", True)
     except Exception as e:
         __log_msg__(f"Error loading Activities data file \'{activity_data}\': {e}", True)
     finally:
@@ -313,11 +319,11 @@ def remove_activity(activities:list, name: str) -> bool:
         __log_msg__(f"\tActivity \'{name}\' not found.", True)
         return False
 
-''' edit_activity                                                                                                    '''
+''' edit_activity_input                                                                                              '''
 #       This function edits an activity in the list of activities if it is present.
 #       It prompts the user for the new values of the activity's attributes one at a time.
 #       It returns True if the activity was present & edited, False otherwise.
-def edit_activity(activities:list, name: str) -> bool:
+def edit_activity_input(activities:list, name: str) -> bool:
     activity = get_activity(activities, name)
     if activity is not None:
         __log_msg__(f"User editing activity \'{activity.name}\'...")
@@ -330,6 +336,24 @@ def edit_activity(activities:list, name: str) -> bool:
         return True
     else:
         return False
+    
+''' edit_activity                                                                                                    '''
+#       This function edits an activity in the list of activities if it is present.
+#       It returns True if the activity was present & edited, False otherwise.
+def edit_activity(activities:list, name: str, description: str = "", tags: list = [], ease: int = 0, reward: int = 0) -> bool:
+    activity = get_activity(activities, name)
+    if activity is not None:
+        __log_msg__(f"Editing activity \'{activity.name}\'...")
+        activity.description = description or activity.description
+        activity.tags = tags or activity.tags
+        activity.ease = ease or activity.ease
+        activity.reward = reward or activity.reward
+        __log_msg__(f"Edited activity \'{activity.name}\'.", True)
+        return True
+    else:
+        __log_msg__(f"Activity \'{name}\' not found.", True)
+        return False
+
 
 ''' score_activity                                                                                                   '''
 #       This function returns a composite score for an activity based on its ease and reward scores.
@@ -399,7 +423,7 @@ def main() -> None:
         if len(sys.argv) < 3:
             print(f"Usage: {sys.argv[0]} edit <activity>")
         else:
-            edit_activity(activities, sys.argv[2])
+            edit_activity_input(activities, sys.argv[2])
     elif sys.argv[1] == "score":
         if len(sys.argv) < 3:
             print(f"Usage: {sys.argv[0]} score <activity>")
