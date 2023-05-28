@@ -34,6 +34,7 @@ import os
 import datetime
 import sys
 from prettytable import PrettyTable
+import openai
 
 
 ''' ################################################################################################################ '''
@@ -195,9 +196,20 @@ class ActivityGPT:
             ActivityGPT.init_timestamp = datetime.datetime.now().strftime(ActivityGPT.TIMESTAMP_FORMAT)
         pass
     
-    def generate_description(self, activity:Activity) -> str:
-        # TODO: implement
-        pass
+    def generate_description(self, activity:Activity, chars:int=256) -> str:
+        '''
+        This function generates a description for the given activity using the GPT-3 API.
+        The function returns a string of length <= chars.
+        '''
+        desc = ''
+        if activity is None:
+            raise ValueError("Activity cannot be None.")
+        elif chars < 1:
+            raise ValueError("Number of characters must be greater than 0.")
+        else:
+            # TODO: query GPT-3 API to generate description, store in desc
+            pass
+        return desc
 
     def generate_tags(self, activity:Activity) -> list:
         # TODO: implement
