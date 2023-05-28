@@ -1,5 +1,6 @@
 __pycache__
-backups/*.dat
+backups
+OpenAI-Playground
 activityconcierge_test.py
 activities.log
 
