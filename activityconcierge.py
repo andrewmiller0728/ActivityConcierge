@@ -85,7 +85,6 @@ class Tag:
 
     def __str__(self) -> str:
         return self.name
-
 # end Tag class
 
 class Activity:
@@ -141,7 +140,6 @@ class Activity:
             tags_str += f"{tag},"
         tags_str = tags_str[:-1]
         return tags_str
-
 # end Activity class
 
 # TODO
@@ -461,13 +459,14 @@ def score_activity(activity: Activity) -> float:
 ''' MAIN/RUN                                                                                                         '''
 ''' ################################################################################################################ '''
 
-''' MAIN                                                                                                             '''
-#       This function runs activty commands based on command line arguments and saves before exiting.
-#       If no args are provided, it prints a help message.
-#       If args are provided, it runs the command specified by the first arg, passing the remaining args to the command.
-#       The remaining args required differ for each command, and are documented in the help message.
-#       The activities are always loaded from the "activities.dat" file, and saved to the same file before exiting.
 def main() -> None:
+    '''
+        This function runs activty commands based on command line arguments and saves before exiting.
+        If no args are provided, it prints a help message.
+        If args are provided, it runs the command specified by the first arg, passing the remaining args to the command.
+        The remaining args required differ for each command, and are documented in the help message.
+        The activities are always loaded from the "activities.dat" file, and saved to the same file before exiting.
+    '''
     __log_msg__('[[[BEGIN PROGRAM]]]')
     __log_msg__('Initializing program...', True)
     activities = load_activities(DATA_FILE)
