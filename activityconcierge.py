@@ -46,7 +46,6 @@ LOG_FILE = "./activities.log"
 TIMESTAMP_FORMAT = '%Y_%m_%d-%H_%M_%S'
 LOG_HEADER = "[[[ ACTIVITY CONCIERGE LOG ]]]\n\n"
 BACKUP_DIR = "./backups"
-BACKUP_TIMESTAMP_FORMAT = '%Y_%m_%d-%H_%M_%S'
 
 
 ''' ################################################################################################################ '''
@@ -305,7 +304,7 @@ def get_activity(activities:list, activity_name:str) -> Activity:
 #       The backup file is saved as <activities_yyyy-mm-dd_hh-mm-ss.dat>.
 #       It returns the path of the backup file.
 def backup_data() -> str:
-    bfile_name = f"activities_{datetime.datetime.now().strftime(BACKUP_TIMESTAMP_FORMAT)}.dat"
+    bfile_name = f"activities_{datetime.datetime.now().strftime(TIMESTAMP_FORMAT)}.dat"
     bfile_path = os.path.join(BACKUP_DIR, bfile_name)
     try:
         with open(DATA_FILE, "r") as data_file:
