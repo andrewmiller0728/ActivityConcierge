@@ -53,13 +53,15 @@ BACKUP_TIMESTAMP_FORMAT = '%Y_%m_%d-%H_%M_%S'
 '''     CLASSES                                                                                                          '''
 ''' ################################################################################################################ '''
 
-''' Tag                                                                                                              '''
-#       This class represents a tag that can be associate with an activity.
-#       Tags are used to categorize activities.
-#       Tag attributes:
-#         - name: a unique, non-empty, case-specific string of alphanumeric characters
-class Tag:
 
+class Tag:
+    '''
+        This class represents a tag that can be associate with an activity.
+        Tags are used to categorize activities.
+        Tag attributes:
+            - name: a unique, non-empty, case-specific string of alphanumeric characters
+            - activities: a list of Activity objects that are associated with the tag
+    '''
     tags = list()
 
     def __init__(self, name:str) -> None:
@@ -86,15 +88,16 @@ class Tag:
 
 # end Tag class
 
-''' Activity                                                                                                         '''
-#       This class represents an activity that the user can do.
-#       Activity attributes:
-#         - name
-#         - description
-#         - list of Tag objects
-#         - ease score (must be an integer between 0 and 10, inclusive)
-#         - reward score (must be an integer between 0 and 10, inclusive)
 class Activity:
+    '''
+        This class represents an activity that the user can do.
+        Activity attributes:
+            - name
+            - description
+            - list of Tag objects
+            - ease score (must be an integer between 0 and 10, inclusive)
+            - reward score (must be an integer between 0 and 10, inclusive)
+    '''
 
     def __init__(self, name:str, description:str, tags:list, ease:int, reward:int) -> None:
         if ease not in range(0, 11):
@@ -121,7 +124,7 @@ class Activity:
         if len(self.tags) == 0:
             return f"{self.name}:{self.description}:[]:({self.ease}:{self.reward})"
         else:
-            tags_str = self.get_tags_str()
+            tags_str = self.__get_tags_str__()
             return f"{self.name}:{self.description}:[{tags_str}]:({self.ease}:{self.reward})"
     
     def attach_tag(self, tag:Tag) -> bool:
@@ -132,7 +135,7 @@ class Activity:
         else:
             return False
 
-    def get_tags_str(self) -> str:
+    def __get_tags_str__(self) -> str:
         tags_str = ""
         for tag in self.tags:
             tags_str += f"{tag},"
@@ -141,19 +144,21 @@ class Activity:
 
 # end Activity class
 
-# TODO: Command Class
-''' Command                                                                                                          '''
-#       This class implements the Command design pattern.
-#       The Command class is an abstract class that represents a command the program can execute.
-#         - member variables:
-#           - name: the name of the command
-#           - datetime: the date and time the command was executed
-#           - args: a list of arguments for the command
-#           - prev: a reference to the previous command, if any (for undo/redo functionality)
-#           - next: a reference to the next command, if any (for undo/redo functionality)
-#         - abstract method, execute(), which is implemented by subclasses.
-#         - abstract method, log(), which logs the command to the log file.
+# TODO
 class Command:
+    '''
+        This class implements the Command design pattern.
+        The Command class is an abstract class that represents a command the program can execute.
+            - member variables:
+                - name: the name of the command
+                - datetime: the date and time the command was executed
+                - args: a list of arguments for the command
+                - prev: a reference to the previous command, if any (for undo/redo functionality)
+                - next: a reference to the next command, if any (for undo/redo functionality)
+            - abstract methods:
+                - execute(), which is implemented by subclasses.
+                - log(), which logs the command to the command log file.
+    '''
 
     def __init__(self, name:str, args:list) -> None:
         self.name = name
@@ -161,23 +166,25 @@ class Command:
         self.args = args
         pass
 
-    def execute(self) -> None:
+    def execute(self, log:bool=True) -> None:
+        # TODO
         pass
 
     def log(self) -> None:
+        # TODO
         pass
-
 # end Command class
 
-# TODO: ActivityGPT Class
-''' ActivityGPT                                                                                                      '''
-#       This class is a singleton class which provides an interface to the GPT-3 API.
-#       Instances of ActivityGPT should be obtained using the get_instance() method.
-#       Functions include:
-#         - generate activity description
-#         - generate activity tags
-#         - generate new activity
+# TODO
 class ActivityGPT:
+    '''
+        This class is a singleton class which provides an interface to the GPT-3 API.
+        Instances of ActivityGPT should be obtained using the get_instance() method.
+        Functions include:
+            - generate activity description
+            - generate activity tags
+            - generate new activity
+    '''
 
     __instance__ = None
 
@@ -217,7 +224,6 @@ class ActivityGPT:
     def generate_activity(self) -> Activity:
         # TODO: implement
         pass
-
 # end ActivityGPT class
 
 
