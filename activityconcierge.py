@@ -18,7 +18,7 @@
 
 
 ''' TODO                                                                                                             '''
-#   - command class
+#   - (?) command class
 #   - gpt integration:
 #     - write activity description
 #     - write activity tags
