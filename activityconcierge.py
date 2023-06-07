@@ -43,7 +43,7 @@ import openai
 
 DATA_FILE = "./activities.dat"
 LOG_FILE = "./activities.log"
-LOG_FORMAT = '%Y_%m_%d-%H_%M_%S'
+TIMESTAMP_FORMAT = '%Y_%m_%d-%H_%M_%S'
 LOG_HEADER = "[[[ ACTIVITY CONCIERGE LOG ]]]\n\n"
 BACKUP_DIR = "./backups"
 BACKUP_TIMESTAMP_FORMAT = '%Y_%m_%d-%H_%M_%S'
@@ -85,7 +85,6 @@ class Tag:
         return self.name
 
 # end Tag class
-
 
 ''' Activity                                                                                                         '''
 #       This class represents an activity that the user can do.
@@ -173,13 +172,13 @@ class Command:
 # TODO: ActivityGPT Class
 ''' ActivityGPT                                                                                                      '''
 #       This class is a singleton class which provides an interface to the GPT-3 API.
+#       Instances of ActivityGPT should be obtained using the get_instance() method.
 #       Functions include:
 #         - generate activity description
 #         - generate activity tags
 #         - generate new activity
 class ActivityGPT:
 
-    TIMESTAMP_FORMAT = '%Y_%m_%d-%H_%M_%S'
     __instance__ = None
 
     @staticmethod
@@ -190,10 +189,10 @@ class ActivityGPT:
 
     def __init__(self) -> None:
         if ActivityGPT.__instance__ is not None:
-            raise Exception("An instance of ActivityGPT already exists, cannot initialize a new instance.")
+            raise Exception("An instance of ActivityGPT already exists, cannot initialize a new instance. Use get_instance() instead.")
         else:
             ActivityGPT.__instance__ = self
-            ActivityGPT.init_timestamp = datetime.datetime.now().strftime(ActivityGPT.TIMESTAMP_FORMAT)
+            ActivityGPT.init_timestamp = datetime.datetime.now().strftime(TIMESTAMP_FORMAT)
         pass
     
     def generate_description(self, activity:Activity, chars:int=256) -> str:
@@ -275,7 +274,7 @@ def __get_help_menu__() -> str:
 #       Log messages begin with a timestamp and end with a newline.
 #       It returns the formatted log message.
 def __log_msg__(message:str, console_print:bool=False) -> str:
-    timestamp = datetime.datetime.now().strftime(LOG_FORMAT)
+    timestamp = datetime.datetime.now().strftime(TIMESTAMP_FORMAT)
     log_entry = f"[{timestamp}] \t{message}\n"
     if console_print:
         print(log_entry, end="")
